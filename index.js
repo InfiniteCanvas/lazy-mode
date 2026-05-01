@@ -35,6 +35,7 @@ const DEFAULT_SETTINGS = Object.freeze({
     showUseButton: true,
     autoSend: false,
     allowEdit: true,
+    useGuidedGeneration: false,
 });
 
 function getSettings() {
@@ -441,17 +442,26 @@ function updateSuggestionData(card, newText) {
 }
 
 async function impersonateSuggestion(text) {
+    const settings = getSettings();
     const textarea = document.getElementById('send_textarea');
     if (!textarea) return;
     
-    const impersonatePrompt = `Continue the scene by writing {{user}}'s next action or dialogue based on this idea: "${text}". Write only {{user}}'s response, in first person.`;
-    
-    textarea.value = `/impersonate ${impersonatePrompt}`;
-    textarea.dispatchEvent(new Event('input', { bubbles: true }));
-    
-    const sendButton = document.getElementById('send_but');
-    if (sendButton) {
-        sendButton.click();
+    if (settings.useGuidedGeneration && extension_settings["GuidedGenerations-Extension"]) {
+        const ggSettings = extension_settings["GuidedGenerations-Extension"];
+        const promptTemplate = ggSettings.promptImpersonate1st || 'Write in first Person perspective from {{user}}. {{input}}';
+        const filledPrompt = promptTemplate.replace('{{input}}', text);
+        const context = SillyTavern.getContext();
+        await context.executeSlashCommandsWithOptions(`/impersonate await=true ${filledPrompt} |`);
+    } else {
+        const impersonatePrompt = `Continue the scene by writing {{user}}'s next action or dialogue based on this idea: "${text}". Write only {{user}}'s response, in first person.`;
+        
+        textarea.value = `/impersonate ${impersonatePrompt}`;
+        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+        
+        const sendButton = document.getElementById('send_but');
+        if (sendButton) {
+            sendButton.click();
+        }
     }
 }
 
@@ -598,6 +608,15 @@ async function setupSettings() {
         allowEdit.checked = settings.allowEdit;
         allowEdit.addEventListener('change', () => {
             settings.allowEdit = allowEdit.checked;
+            saveSettings();
+        });
+    }
+    
+    const useGuidedGeneration = document.getElementById('lm_use_guided_generation');
+    if (useGuidedGeneration) {
+        useGuidedGeneration.checked = settings.useGuidedGeneration;
+        useGuidedGeneration.addEventListener('change', () => {
+            settings.useGuidedGeneration = useGuidedGeneration.checked;
             saveSettings();
         });
     }
