@@ -6,7 +6,7 @@
  */
 
 import { eventSource, event_types } from '../../../../script.js';
-import { renderExtensionTemplateAsync } from '../../../extensions.js';
+import { extension_settings, renderExtensionTemplateAsync } from '../../../extensions.js';
 import { saveSettingsDebounced } from '../../../../script.js';
 
 const MODULE_NAME = 'lazy_mode';
@@ -53,16 +53,10 @@ function saveSettings() {
     saveSettingsDebounced();
 }
 
-/**
- * Checks if the extension is enabled
- */
 function isEnabled() {
     return getSettings().enabled;
 }
 
-/**
- * Adds the lazy-mode button to a message element
- */
 function addLazyButton(messageElement, messageId) {
     if (!messageElement) return;
     
@@ -83,9 +77,6 @@ function addLazyButton(messageElement, messageId) {
     extraButtons.insertBefore(button, extraButtons.firstChild);
 }
 
-/**
- * Handles clicking the lazy-mode button
- */
 async function handleLazyButtonClick(messageId, button) {
     if (!isEnabled()) {
         toastr.warning('Lazy Mode is disabled. Enable it in extension settings.', 'Lazy Mode');
@@ -108,9 +99,6 @@ async function handleLazyButtonClick(messageId, button) {
     }
 }
 
-/**
- * Generates action suggestions using the configured API
- */
 async function generateSuggestions(targetMessageId) {
     const settings = getSettings();
     const context = SillyTavern.getContext();
@@ -133,9 +121,6 @@ async function generateSuggestions(targetMessageId) {
     insertSuggestionsMessage(targetMessageId, suggestions, response);
 }
 
-/**
- * Builds the message array up to the target message
- */
 function buildMessagesUpTo(targetMessageId, promptText) {
     const context = SillyTavern.getContext();
     const messages = [];
@@ -159,9 +144,6 @@ function buildMessagesUpTo(targetMessageId, promptText) {
     return messages;
 }
 
-/**
- * Generates text using a connection profile
- */
 async function generateWithProfile(messages, settings) {
     const context = SillyTavern.getContext();
     
@@ -188,9 +170,6 @@ async function generateWithProfile(messages, settings) {
     return data.choices?.[0]?.message?.content || data.text || '';
 }
 
-/**
- * Generates text using the main API
- */
 async function generateWithMainAPI(messages, settings) {
     const { generateRaw } = SillyTavern.getContext();
     
@@ -209,9 +188,6 @@ async function generateWithMainAPI(messages, settings) {
     return result;
 }
 
-/**
- * Parses suggestions from the AI response
- */
 function parseSuggestions(response, maxCount) {
     if (!response) return [];
     
@@ -242,9 +218,6 @@ function parseSuggestions(response, maxCount) {
     return suggestions;
 }
 
-/**
- * Inserts a suggestions message into the chat
- */
 function insertSuggestionsMessage(targetMessageId, suggestions, rawContent) {
     const context = SillyTavern.getContext();
     const settings = getSettings();
@@ -283,9 +256,6 @@ function insertSuggestionsMessage(targetMessageId, suggestions, rawContent) {
     context.saveChat();
 }
 
-/**
- * Finds existing suggestions for a target message
- */
 function findExistingSuggestions(targetMessageId) {
     const context = SillyTavern.getContext();
     for (let i = 0; i < context.chat.length; i++) {
@@ -297,9 +267,6 @@ function findExistingSuggestions(targetMessageId) {
     return -1;
 }
 
-/**
- * Updates a message in the UI without re-rendering the whole chat
- */
 function updateMessageInUI(messageId, message) {
     const messageBlock = document.querySelector(`.mes[mesid="${messageId}"]`);
     if (!messageBlock) return;
@@ -311,9 +278,6 @@ function updateMessageInUI(messageId, message) {
     }
 }
 
-/**
- * Builds the HTML for suggestions display
- */
 function buildSuggestionsHtml(data, settings) {
     const { suggestions } = data;
     const isOpen = settings.autoOpen ? 'open' : '';
@@ -339,9 +303,6 @@ function buildSuggestionsHtml(data, settings) {
     `;
 }
 
-/**
- * Builds a single suggestion card
- */
 function buildSuggestionCard(index, text, settings) {
     const useButton = settings.showUseButton 
         ? `<button class="lm-suggestion-btn lm-suggestion-use" data-action="use" title="Use this suggestion">
@@ -369,9 +330,6 @@ function buildSuggestionCard(index, text, settings) {
     `;
 }
 
-/**
- * Binds events to suggestion buttons
- */
 function bindSuggestionEvents(messageBlock, data) {
     if (!data) return;
     
@@ -392,9 +350,6 @@ function bindSuggestionEvents(messageBlock, data) {
     });
 }
 
-/**
- * Handles suggestion action button clicks
- */
 async function handleSuggestionAction(action, text, card) {
     const settings = getSettings();
     
@@ -411,11 +366,7 @@ async function handleSuggestionAction(action, text, card) {
     }
 }
 
-/**
- * Inserts a suggestion into the input textarea
- */
 async function useSuggestion(text, card) {
-    const context = SillyTavern.getContext();
     const textarea = document.getElementById('send_textarea');
     if (!textarea) return;
     
@@ -441,9 +392,6 @@ async function useSuggestion(text, card) {
     }
 }
 
-/**
- * Starts inline editing of a suggestion
- */
 function startEditing(card, text) {
     const contentDiv = card.querySelector('.lm-suggestion-content');
     if (!contentDiv) return;
@@ -477,9 +425,6 @@ function startEditing(card, text) {
     textarea.select();
 }
 
-/**
- * Updates the suggestion data after editing
- */
 function updateSuggestionData(card, newText) {
     const messageBlock = card.closest('.mes');
     if (!messageBlock) return;
@@ -495,11 +440,7 @@ function updateSuggestionData(card, newText) {
     }
 }
 
-/**
- * Triggers an impersonate generation based on a suggestion
- */
 async function impersonateSuggestion(text) {
-    const context = SillyTavern.getContext();
     const textarea = document.getElementById('send_textarea');
     if (!textarea) return;
     
@@ -514,18 +455,12 @@ async function impersonateSuggestion(text) {
     }
 }
 
-/**
- * Escapes HTML special characters
- */
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 }
 
-/**
- * Processes all visible messages to add lazy-mode buttons
- */
 function processVisibleMessages() {
     if (!isEnabled()) return;
     
@@ -540,9 +475,6 @@ function processVisibleMessages() {
     });
 }
 
-/**
- * Re-binds events to existing suggestion messages after chat changes
- */
 function rebindExistingSuggestions() {
     const context = SillyTavern.getContext();
     const messageBlocks = document.querySelectorAll('.mes');
@@ -557,9 +489,6 @@ function rebindExistingSuggestions() {
     });
 }
 
-/**
- * Sets up the settings UI and event handlers
- */
 async function setupSettings() {
     const settingsHtml = await renderExtensionTemplateAsync(EXTENSION_FOLDER, 'settings');
     const container = document.getElementById('extensions_settings2');
@@ -569,7 +498,6 @@ async function setupSettings() {
     
     const settings = getSettings();
     
-    // Master toggle
     const masterToggle = document.getElementById('lm_master_toggle');
     if (masterToggle) {
         masterToggle.checked = settings.enabled;
@@ -582,7 +510,6 @@ async function setupSettings() {
         });
     }
     
-    // Prompt
     const promptText = document.getElementById('lm_prompt_text');
     if (promptText) {
         promptText.value = settings.prompt;
@@ -592,7 +519,6 @@ async function setupSettings() {
         });
     }
     
-    // Restore default prompt
     const restoreBtn = document.getElementById('lm_restore_default_prompt');
     if (restoreBtn) {
         restoreBtn.addEventListener('click', () => {
@@ -603,7 +529,6 @@ async function setupSettings() {
         });
     }
     
-    // Connection profile
     const profileSelect = document.getElementById('lm_connection_profile');
     if (profileSelect) {
         populateConnectionProfiles(profileSelect);
@@ -614,7 +539,6 @@ async function setupSettings() {
         });
     }
     
-    // Max tokens
     const maxTokens = document.getElementById('lm_max_tokens');
     if (maxTokens) {
         maxTokens.value = settings.maxTokens;
@@ -624,7 +548,6 @@ async function setupSettings() {
         });
     }
     
-    // Number of suggestions
     const numSuggestions = document.getElementById('lm_num_suggestions');
     if (numSuggestions) {
         numSuggestions.value = settings.numSuggestions;
@@ -634,7 +557,6 @@ async function setupSettings() {
         });
     }
     
-    // Auto trigger
     const autoTrigger = document.getElementById('lm_auto_trigger');
     if (autoTrigger) {
         autoTrigger.checked = settings.autoTrigger;
@@ -644,7 +566,6 @@ async function setupSettings() {
         });
     }
     
-    // Auto open
     const autoOpen = document.getElementById('lm_auto_open');
     if (autoOpen) {
         autoOpen.checked = settings.autoOpen;
@@ -654,7 +575,6 @@ async function setupSettings() {
         });
     }
     
-    // Show use button
     const showUseButton = document.getElementById('lm_show_use_button');
     if (showUseButton) {
         showUseButton.checked = settings.showUseButton;
@@ -664,7 +584,6 @@ async function setupSettings() {
         });
     }
     
-    // Auto send
     const autoSend = document.getElementById('lm_auto_send');
     if (autoSend) {
         autoSend.checked = settings.autoSend;
@@ -674,7 +593,6 @@ async function setupSettings() {
         });
     }
     
-    // Allow edit
     const allowEdit = document.getElementById('lm_allow_edit');
     if (allowEdit) {
         allowEdit.checked = settings.allowEdit;
@@ -684,7 +602,6 @@ async function setupSettings() {
         });
     }
     
-    // Collapsible card headers
     document.querySelectorAll('.lm-card-header-collapsible').forEach(header => {
         header.addEventListener('click', () => {
             const collapseKey = header.dataset.collapse;
@@ -698,18 +615,9 @@ async function setupSettings() {
     });
 }
 
-/**
- * Populates the connection profile dropdown
- */
 function populateConnectionProfiles(select) {
-    // This would ideally fetch from SillyTavern's connection manager
-    // For now, we'll leave it with just the default option
-    // Users can type in custom profile names if needed
 }
 
-/**
- * Handles auto-trigger on new character messages
- */
 function handleCharacterMessageRendered(data) {
     if (!isEnabled()) return;
     if (!getSettings().autoTrigger) return;
@@ -721,21 +629,18 @@ function handleCharacterMessageRendered(data) {
     const message = context.chat[messageId];
     if (!message || message.is_user || message.is_system) return;
     
-    // Add button first
     setTimeout(() => {
         const messageBlock = document.querySelector(`.mes[mesid="${messageId}"]`);
         if (messageBlock) {
             addLazyButton(messageBlock, messageId);
         }
-        
-        // Auto-generate suggestions
+
         generateSuggestions(messageId).catch(err => {
             console.error('[Lazy Mode] Auto-trigger failed:', err);
         });
     }, 100);
 }
 
-// Event listeners
 eventSource.on(event_types.CHARACTER_MESSAGE_RENDERED, handleCharacterMessageRendered);
 
 eventSource.on(event_types.CHAT_CHANGED, () => {
@@ -753,7 +658,6 @@ eventSource.on(event_types.MESSAGE_EDITED, () => {
     setTimeout(processVisibleMessages, 100);
 });
 
-// Initialize when app is ready
 eventSource.on(event_types.APP_READY, async () => {
     await setupSettings();
     processVisibleMessages();
@@ -761,7 +665,6 @@ eventSource.on(event_types.APP_READY, async () => {
     console.log('[Lazy Mode] Extension loaded');
 });
 
-// Also process on initial load in case APP_READY already fired
 jQuery(async () => {
     if (SillyTavern?.getContext()?.chat?.length > 0) {
         await setupSettings();

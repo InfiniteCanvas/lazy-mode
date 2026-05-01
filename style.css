@@ -1,10 +1,3 @@
-/**
- * Lazy Mode Extension Styles
- * Inspired by TunnelVision's design system
- * Brand: Teal (#00b894) -> Mint (#55efc4)
- */
-
-/* ===== Container ===== */
 .lm-container {
     margin: 10px 0;
     border-radius: 10px;
@@ -13,7 +6,7 @@
     border: 1px solid rgba(0, 184, 148, 0.35);
 }
 
-/* ===== Header ===== */
+
 .lm-header {
     background: linear-gradient(135deg, #00b894 0%, #55efc4 100%);
     border-radius: 10px 10px 0 0;
@@ -69,12 +62,12 @@
     letter-spacing: 0.3px;
 }
 
-/* ===== Settings Body ===== */
+
 .lm-settings-body {
     padding: 12px;
 }
 
-/* ===== Cards ===== */
+
 .lm-card {
     margin: 10px 0;
     border-radius: 8px;
@@ -132,7 +125,7 @@
     padding: 14px;
 }
 
-/* ===== Setting Rows ===== */
+
 .lm-setting-row {
     margin: 10px 0;
     padding: 10px 12px;
@@ -162,7 +155,7 @@
     line-height: 1.4;
 }
 
-/* ===== Custom Toggle Switch ===== */
+
 .lm-toggle {
     display: flex;
     align-items: center;
@@ -219,7 +212,7 @@
     color: var(--SmartThemeEmColor);
 }
 
-/* ===== Select, Textarea, Inputs ===== */
+
 .lm-select {
     width: 100%;
     padding: 8px 12px;
@@ -288,7 +281,7 @@
     box-shadow: 0 0 0 2px rgba(85, 239, 196, 0.15);
 }
 
-/* ===== Buttons ===== */
+
 .lm-button-row {
     display: flex;
     gap: 8px;
@@ -337,7 +330,7 @@
     border-color: rgba(85, 239, 196, 0.5);
 }
 
-/* ===== Count Badge ===== */
+
 .lm-count-badge {
     font-size: 10px;
     padding: 1px 7px;
@@ -349,7 +342,7 @@
     text-align: center;
 }
 
-/* ===== Message Button ===== */
+
 .lm-message-btn {
     cursor: pointer;
     opacity: 0.6;
@@ -375,7 +368,7 @@
     to { transform: rotate(360deg); }
 }
 
-/* ===== Suggestions Container ===== */
+
 .lm-suggestions-container {
     margin: 8px 0;
 }
@@ -431,7 +424,7 @@
     padding: 12px;
 }
 
-/* ===== Suggestion Card ===== */
+
 .lm-suggestion-card {
     background: var(--black30a, rgba(0, 0, 0, 0.15));
     border: 1px solid var(--SmartThemeBorderColor, #444);
@@ -502,7 +495,7 @@
     color: #a29bfe;
 }
 
-/* ===== Suggestion Edit Input ===== */
+
 .lm-suggestion-edit-input {
     width: 100%;
     padding: 6px 8px;
@@ -522,7 +515,7 @@
     box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.15);
 }
 
-/* ===== Responsive ===== */
+
 @media (max-width: 768px) {
     .lm-header {
         padding: 10px 14px;
