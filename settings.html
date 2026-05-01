@@ -1,0 +1,132 @@
+<div class="lm-container">
+    <div class="lm-header inline-drawer-toggle inline-drawer-header">
+        <div class="lm-header-icon">🛋️</div>
+        <div class="lm-header-text">
+            <div class="lm-header-title" data-i18n="Lazy Mode">Lazy Mode</div>
+            <div class="lm-header-subtitle">AI-powered action suggestions</div>
+        </div>
+        <div class="lm-header-badge">v1.0</div>
+        <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
+    </div>
+    <div class="inline-drawer-content lm-settings-body">
+        <!-- Master Toggle -->
+        <div class="lm-setting-row">
+            <label class="lm-toggle">
+                <input type="checkbox" id="lm_master_toggle">
+                <span class="lm-toggle-slider"></span>
+                <span class="lm-toggle-label">Enable Lazy Mode</span>
+            </label>
+            <div class="lm-help-text">Adds a suggestion button to each AI message</div>
+        </div>
+
+        <!-- Prompt Settings Card -->
+        <div class="lm-card">
+            <div class="lm-card-header">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span>Suggestion Prompt</span>
+            </div>
+            <div class="lm-card-body">
+                <div class="lm-setting-row">
+                    <label class="lm-label" for="lm_prompt_text">Prompt Template</label>
+                    <textarea id="lm_prompt_text" class="lm-textarea" rows="6" placeholder="Enter your prompt template..."></textarea>
+                    <div class="lm-help-text">Use {{user}} and {{char}} macros. The AI will generate suggestions based on this prompt.</div>
+                </div>
+                <div class="lm-button-row">
+                    <button id="lm_restore_default_prompt" class="lm-btn lm-btn-secondary">
+                        <i class="fa-solid fa-rotate-left"></i> Restore Default
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Generation Settings Card -->
+        <div class="lm-card">
+            <div class="lm-card-header lm-card-header-collapsible" data-collapse="generation">
+                <i class="fa-solid fa-sliders"></i>
+                <span>Generation Settings</span>
+                <i class="fa-solid fa-chevron-down lm-collapse-icon"></i>
+            </div>
+            <div class="lm-card-body" id="lm_generation_body" style="display:none;">
+                <div class="lm-setting-row">
+                    <label class="lm-label" for="lm_connection_profile">Connection Profile</label>
+                    <select id="lm_connection_profile" class="lm-select">
+                        <option value="">-- Use Main API --</option>
+                    </select>
+                    <div class="lm-help-text">Select a separate API profile for generating suggestions. Leave empty to use the main chat API.</div>
+                </div>
+                <div class="lm-setting-row">
+                    <label class="lm-label" for="lm_max_tokens">Max Response Tokens</label>
+                    <input type="number" id="lm_max_tokens" class="lm-number-input" value="500" min="50" max="2000" step="50">
+                    <div class="lm-help-text">Maximum tokens for the suggestion generation</div>
+                </div>
+                <div class="lm-setting-row">
+                    <label class="lm-label" for="lm_num_suggestions">Number of Suggestions</label>
+                    <input type="number" id="lm_num_suggestions" class="lm-number-input" value="4" min="1" max="10" step="1">
+                    <div class="lm-help-text">How many action suggestions to generate</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Auto-Trigger Settings Card -->
+        <div class="lm-card">
+            <div class="lm-card-header lm-card-header-collapsible" data-collapse="auto">
+                <i class="fa-solid fa-bolt"></i>
+                <span>Auto-Trigger</span>
+                <i class="fa-solid fa-chevron-down lm-collapse-icon"></i>
+            </div>
+            <div class="lm-card-body" id="lm_auto_body" style="display:none;">
+                <div class="lm-setting-row">
+                    <label class="lm-toggle">
+                        <input type="checkbox" id="lm_auto_trigger">
+                        <span class="lm-toggle-slider"></span>
+                        <span class="lm-toggle-label">Auto-generate on new messages</span>
+                    </label>
+                    <div class="lm-help-text">Automatically generate suggestions when the AI sends a new message</div>
+                </div>
+                <div class="lm-setting-row">
+                    <label class="lm-toggle">
+                        <input type="checkbox" id="lm_auto_open">
+                        <span class="lm-toggle-slider"></span>
+                        <span class="lm-toggle-label">Auto-open suggestions</span>
+                    </label>
+                    <div class="lm-help-text">Automatically expand the suggestions panel when generated</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Behavior Settings Card -->
+        <div class="lm-card">
+            <div class="lm-card-header lm-card-header-collapsible" data-collapse="behavior">
+                <i class="fa-solid fa-gear"></i>
+                <span>Behavior</span>
+                <i class="fa-solid fa-chevron-down lm-collapse-icon"></i>
+            </div>
+            <div class="lm-card-body" id="lm_behavior_body" style="display:none;">
+                <div class="lm-setting-row">
+                    <label class="lm-toggle">
+                        <input type="checkbox" id="lm_show_use_button">
+                        <span class="lm-toggle-slider"></span>
+                        <span class="lm-toggle-label">Show "Use" button</span>
+                    </label>
+                    <div class="lm-help-text">Show the button to insert suggestion into the input box</div>
+                </div>
+                <div class="lm-setting-row">
+                    <label class="lm-toggle">
+                        <input type="checkbox" id="lm_auto_send">
+                        <span class="lm-toggle-slider"></span>
+                        <span class="lm-toggle-label">Auto-send on "Use"</span>
+                    </label>
+                    <div class="lm-help-text">Automatically send the message when using a suggestion</div>
+                </div>
+                <div class="lm-setting-row">
+                    <label class="lm-toggle">
+                        <input type="checkbox" id="lm_allow_edit">
+                        <span class="lm-toggle-slider"></span>
+                        <span class="lm-toggle-label">Allow editing suggestions</span>
+                    </label>
+                    <div class="lm-help-text">Enable inline editing of generated suggestions</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
